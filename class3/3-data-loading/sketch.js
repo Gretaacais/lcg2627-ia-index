@@ -45,16 +45,24 @@ function moveRocket(){
   }
 }
 
-// preload carica i file prima di setup
+// preload carica i file prima di setup // p5js version 1
+/*
 function preload(){
     // csv con la prima riga come intestazione (header)
     table = loadTable("stars.csv", "csv", "header");
     starImg = loadImage("star.png");
     rocketImg = loadImage("rocket.png");
 }
+    */
 
-function setup(){
+async function setup(){ // in p5js version 2 preload non esiste più, quindi si usa setup asincrono
     createCanvas(xMax, yMax); // crea la finestra 400x600
+
+    /* Loading data p5js version 2 */
+    table = await loadTable("stars.csv", ",", "header");
+    starImg = await loadImage("star.png");
+    rocketImg = await loadImage("rocket.png");
+
     frameRate(30);            // 30 fotogrammi al secondo
     angleMode(DEGREES);       // gli angoli sono espressi in gradi
 }
