@@ -7,6 +7,7 @@ let xRocket = xMax/2;
 let yRocket = yMax*0.6;
 
 // disegna una singola stella; il colore dipende da i
+// i: indice, starX/starY: posizione, transparency: alpha, size: diametro
 function drawStar(i, starX, starY, transparency, size){
   if(i%2==0){
       //stella tipo 1
@@ -28,6 +29,7 @@ function drawStar(i, starX, starY, transparency, size){
 function drawStars(n=120){
   push(); // aprire contesto di disegno
   noStroke(); // eliminare i bordi 
+
   for (let i=0; i < n; i++){
     let starX = (i*37) % width + (i%3)*5;
     let starY = ((i*73) % height) + (1%7);
@@ -39,56 +41,41 @@ function drawStars(n=120){
 
     drawStar(i, starX, starY, randomTransparency, randomSize)
   }
-  pop();
+  pop(); // chiudere contesto
 }
 
-// disegna il razzo in (x, y) con scala scl e rotazione angle (gradi)
-function drawRocket(x, y, scl=1, angle=0){
+// disegna il razzo nella posizione (xRocket, yRocket)
+function drawRocket(){
   push();
-  translate(x, y); // l'origine si sposta nella posizione del razzo
-  scale(scl);      // ingrandire/rimpicciolire
-  rotate(angle);   // ruotare attorno all'origine
 
-  // da qui in poi le coordinate sono relative al razzo
   // corpo
   fill(220);
   stroke(40);
   rectMode(CENTER);
-  rect(0, 30, 80, 180, 20);
+  rect(xRocket, yRocket+30, 80, 180, 20);
 
   // punta (triangolo rosso)
   fill(200, 40, 40);
-  triangle(-40, -60, 40,-60, 0, -120)
+  triangle(xRocket-40, yRocket-60, xRocket+40,yRocket-60, xRocket, yRocket-120)
 
   // finestrino
   fill(40, 150, 220);
   stroke(255);
   strokeWeight(3);
-  ellipse(0, 30,48,48);
+  ellipse(xRocket, yRocket+30,48,48);
 
-  pop(); // ripristinare il sistema di coordinate
+  pop();
 }
 
-// muovere il razzo: a destra e verso l'alto
+// aggiorna la posizione del razzo a ogni fotogramma
 function moveRocket(){
-  /*xRocket = (xRocket +1) % xMax;
+  xRocket = (xRocket +1) % xMax;
   yRocket = yRocket -1;
 
   // oltre la soglia, il razzo riparte dal basso
-  let soglia = - (yMax * 0.6);th
+  let soglia = - (yMax * 0.6);
   if (yRocket < soglia){
     yRocket = yMax;
-  }*/
-
-  // muovere il razzo: a destra e verso l'alto (retta 45°)
-  xRocket = xRocket + 1;
-  yRocket = yRocket - 1;
-
-  // se il razzo è uscito in alto a destra,
-  // riparte dal basso a sinistra
-  if (xRocket > xMax - 40 && yRocket < 0){
-    xRocket = 0;
-    yRocket = yMax - 40; // calcolare la posizione in basso considerando l'altezza del razzo ruotato
   }
 }
 
@@ -107,10 +94,21 @@ function draw() {
   text("mouseX: " + mouseX + ",\
      mouseY: " + mouseY,20,20)
 
-  drawStars(120) // stelle
+  drawStars(120)  // sfondo di stelle
 
-  // razzo scalato a 0.75 e ruotato di 45 gradi
-  drawRocket(xRocket, yRocket, 0.75, 45);
+  drawRocket();   // razzo
 
-  moveRocket(); // aggiornare la posizione
+  moveRocket();   // aggiornare la posizione
 }
+
+function mousePressed(){
+  if(isLooping()){
+    noLoop();
+  } else{
+    loop()
+  }
+}
+
+function keyPressed(){
+  redraw();
+  }
